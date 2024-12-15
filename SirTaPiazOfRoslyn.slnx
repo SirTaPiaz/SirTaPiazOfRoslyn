@@ -1,1 +1,8 @@
-﻿<Solution />
+﻿<Solution>
+  <Folder Name="/SolutionFolder/">
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="Episode01\Episode01.csproj" Type="Classic C#" />
+</Solution>
