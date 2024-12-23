@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 const string sourceCode = """
                           using System;
 
-                          namespace Episode01;
+                          namespace BuildingCode;
 
                           public class Program
                           {
@@ -26,10 +26,11 @@ var syntaxTree = SyntaxFactory.ParseSyntaxTree(sourceCode);
 
 // 2. Create a Compilation
 var compilation = CSharpCompilation.Create(
-    assemblyName: "Episode01",
+    assemblyName: "BuildingCode",
     options: new CSharpCompilationOptions(OutputKind.ConsoleApplication),
     syntaxTrees: [syntaxTree],
-    references:[
+    references:
+    [
         MetadataReference.CreateFromFile(coreLib.Location),
         MetadataReference.CreateFromFile(console.Location),
         MetadataReference.CreateFromFile(systemRuntime.Location)

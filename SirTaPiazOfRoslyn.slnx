@@ -4,5 +4,5 @@
     <File Path="README.md" />
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="Episode01\Episode01.csproj" Type="Classic C#" />
+  <Project Path="BuildingCode\BuildingCode.csproj" Type="Classic C#"/>
 </Solution>

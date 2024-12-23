@@ -4,7 +4,7 @@ We will discuss basics of compiler as a closed box, and how Roslyn opened this b
 by using APIs provided by Roslyn, we'll create a syntax tree, compiles it, and finally emitting an assembly for it. To
 examine whether the compiled application works, we are loading the assembly and invoking the entry point!
 
-![Compiler & Roslyn](./assets/episode-01-compiler-roslyn.png)
+![Compiler & Roslyn](./assets/compiler-roslyn.png)
 
 ## Resources:
 
