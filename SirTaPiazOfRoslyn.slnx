@@ -4,5 +4,6 @@
     <File Path="README.md" />
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="BuildingCode\BuildingCode.csproj" Type="Classic C#"/>
+    <Project Path="BuildingCode\BuildingCode.csproj" Type="Classic C#"/>
+    <Project Path="CreatingSyntaxTrees\CreatingSyntaxTrees.csproj" Type="Classic C#"/>
 </Solution>
