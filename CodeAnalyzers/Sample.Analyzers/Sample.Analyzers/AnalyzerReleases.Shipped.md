@@ -4,4 +4,4 @@
 
  Rule ID | Category | Severity | Notes                                   
 ---------|----------|----------|-----------------------------------------
- SHG001  | Usage    | Warning  | You use None instead of throw exception 
+ SHG001  | Usage    | Error    | You use None instead of throw exception 

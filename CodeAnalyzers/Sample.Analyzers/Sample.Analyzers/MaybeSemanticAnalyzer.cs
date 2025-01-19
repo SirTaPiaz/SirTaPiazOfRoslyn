@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -30,8 +29,8 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
     private const string Category = "Usage";
 
     private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category,
-        DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description
-        // , customTags: [WellKnownDiagnosticTags.NotConfigurable]
+        DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description,
+        customTags: [WellKnownDiagnosticTags.NotConfigurable]
     );
 
     // Keep in mind: you have to list your rules here.
@@ -59,35 +58,26 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
         if (context.Operation.SemanticModel is null)
             return;
 
-        var containingMethodSyntax = GetContainingMethodSyntax(context.Operation.Syntax);
+        var containingMethodSyntax = GetContainingMethod(context.Operation.Syntax);
         var containingMethodSymbol =
             context.Operation.SemanticModel.GetDeclaredSymbol(containingMethodSyntax) as IMethodSymbol;
 
-        if (containingMethodSymbol?.ReturnType is not INamedTypeSymbol returnTypeSymbol)
-            return;
+        var returnType = containingMethodSymbol?.ReturnType;
+        var maybeType = context.Compilation.GetTypeByMetadataName("Sample.Fx.Maybe`1");
 
-        context.CancellationToken.ThrowIfCancellationRequested();
-
-        var taskSymbol = context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task`1");
-        var isTask = returnTypeSymbol.OriginalDefinition.Equals(taskSymbol, SymbolEqualityComparer.Default);
-
-        var typeArguments = returnTypeSymbol.TypeArguments.FirstOrDefault();
-
-        var expectedReturnType = isTask ? typeArguments : returnTypeSymbol;
-        var maybeTypeSymbol = context.Compilation.GetTypeByMetadataName("Sample.Fx.Maybe`1");
-
-        if (!expectedReturnType!.OriginalDefinition.Equals(maybeTypeSymbol, SymbolEqualityComparer.Default))
+        if (!returnType.OriginalDefinition.Equals(maybeType, SymbolEqualityComparer.Default))
             return;
 
         var diagnostic = Diagnostic.Create(Rule, context.Operation.Syntax.GetLocation());
         context.ReportDiagnostic(diagnostic);
     }
 
-    private MethodDeclarationSyntax GetContainingMethodSyntax(SyntaxNode syntax)
+    private MethodDeclarationSyntax GetContainingMethod(SyntaxNode syntax)
     {
         while (true)
         {
-            if (syntax.Parent is MethodDeclarationSyntax mds) return mds;
+            if (syntax.Parent is MethodDeclarationSyntax methodDeclarationSyntax)
+                return methodDeclarationSyntax;
             syntax = syntax.Parent!;
         }
     }
