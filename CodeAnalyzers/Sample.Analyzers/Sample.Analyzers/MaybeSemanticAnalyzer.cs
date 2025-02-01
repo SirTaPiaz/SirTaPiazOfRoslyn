@@ -48,7 +48,7 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
         context.RegisterOperationAction(AnalyzeThrowStatements, OperationKind.Throw);
     }
 
-    private void AnalyzeThrowStatements(OperationAnalysisContext context)
+    private static void AnalyzeThrowStatements(OperationAnalysisContext context)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -65,14 +65,14 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
         var returnType = containingMethodSymbol?.ReturnType;
         var maybeType = context.Compilation.GetTypeByMetadataName("Sample.Fx.Maybe`1");
 
-        if (!returnType.OriginalDefinition.Equals(maybeType, SymbolEqualityComparer.Default))
+        if (!returnType!.OriginalDefinition.Equals(maybeType, SymbolEqualityComparer.Default))
             return;
 
         var diagnostic = Diagnostic.Create(Rule, context.Operation.Syntax.GetLocation());
         context.ReportDiagnostic(diagnostic);
     }
 
-    private MethodDeclarationSyntax GetContainingMethod(SyntaxNode syntax)
+    private static MethodDeclarationSyntax GetContainingMethod(SyntaxNode syntax)
     {
         while (true)
         {

@@ -1,5 +1,7 @@
 ﻿<Solution>
   <Folder Name="/CodeAnalyzers/">
+    <Project Path="CodeAnalyzers\Sample.Analyzers\Sample.Analyzers.Tests\Sample.Analyzers.Tests.csproj"
+             Type="Classic C#"/>
     <Project Path="CodeAnalyzers\Sample.Analyzers\Sample.Analyzers\Sample.Analyzers.csproj" Type="Classic C#"/>
     <Project Path="CodeAnalyzers\Sample.Console\Sample.Console.csproj" Type="Classic C#"/>
     <Project Path="CodeAnalyzers\Sample.Fx\Sample.Fx.csproj" Type="Classic C#"/>
