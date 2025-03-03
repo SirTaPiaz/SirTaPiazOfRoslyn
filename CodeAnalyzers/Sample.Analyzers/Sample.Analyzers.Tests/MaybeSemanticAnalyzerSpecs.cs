@@ -12,7 +12,6 @@ public sealed class MaybeSemanticAnalyzerSpecs
     [Fact]
     public async Task When_MethodWithReturnTypeMaybe_ContainsThrow_Then_ReportDiagnostic()
     {
-        //lang=c#
         const string code = """
                             using System;
                             using Sample.Fx;
@@ -21,14 +20,14 @@ public sealed class MaybeSemanticAnalyzerSpecs
                             {
                                 public Maybe<int> GetValue(string number)
                                 {
-                                    throw new InvalidOperationException("Could not parse the number");
+                                    {|#0:throw new InvalidOperationException("Could not parse the number");|}
                                 }
                             }
                             """;
 
         var expectedDiagnostic = CSharpAnalyzerVerifier<MaybeSemanticAnalyzer, DefaultVerifier>
             .Diagnostic(MaybeSemanticAnalyzer.DiagnosticId)
-            .WithLocation(8, 9);
+            .WithLocation(0);
 
         var testAnalyzer = new CSharpAnalyzerTest<MaybeSemanticAnalyzer, DefaultVerifier>()
         {

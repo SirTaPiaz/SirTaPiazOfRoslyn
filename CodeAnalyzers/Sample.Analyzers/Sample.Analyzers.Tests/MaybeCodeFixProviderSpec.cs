@@ -21,7 +21,7 @@ public sealed class MaybeCodeFixProviderSpec
                             {
                                 public Sample.Fx.Maybe<int> GetValue(string number)
                                 {
-                                    throw new InvalidOperationException("Could not parse the number");
+                                    {|#0:throw new InvalidOperationException("Could not parse the number");|}
                                 }
                             }
                             """;
@@ -42,7 +42,7 @@ public sealed class MaybeCodeFixProviderSpec
 
         var expectedDiagnostic = CSharpCodeFixVerifier<MaybeSemanticAnalyzer, MaybeCodeFixProvider, DefaultVerifier>
             .Diagnostic()
-            .WithLocation(8, 9)
+            .WithLocation(0)
             .WithMessage("Use Maybe.None instead of throw exception");
 
         var codeFixTest = new CSharpCodeFixTest<MaybeSemanticAnalyzer, MaybeCodeFixProvider, DefaultVerifier>
@@ -76,7 +76,7 @@ public sealed class MaybeCodeFixProviderSpec
                             {
                                 public Maybe<int> GetValue(string number)
                                 {
-                                    throw new InvalidOperationException("Could not parse the number");
+                                    {|#0:throw new InvalidOperationException("Could not parse the number");|}
                                 }
                             }
                             """;
@@ -97,7 +97,7 @@ public sealed class MaybeCodeFixProviderSpec
 
         var expectedDiagnostic = CSharpCodeFixVerifier<MaybeSemanticAnalyzer, MaybeCodeFixProvider, DefaultVerifier>
             .Diagnostic()
-            .WithLocation(8, 9)
+            .WithLocation(0)
             .WithMessage("Use Maybe.None instead of throw exception");
 
         var codeFixTest = new CSharpCodeFixTest<MaybeSemanticAnalyzer, MaybeCodeFixProvider, DefaultVerifier>
