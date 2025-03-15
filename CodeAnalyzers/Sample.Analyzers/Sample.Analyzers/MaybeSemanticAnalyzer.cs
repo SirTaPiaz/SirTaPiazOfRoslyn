@@ -30,7 +30,11 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
 
     private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category,
         DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description
-        // ,customTags: [WellKnownDiagnosticTags.NotConfigurable, WellKnownDiagnosticTags.Compiler]
+        , customTags:
+        [
+            WellKnownDiagnosticTags.NotConfigurable,
+            WellKnownDiagnosticTags.Compiler
+        ]
     );
 
     // Keep in mind: you have to list your rules here.

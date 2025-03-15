@@ -6,7 +6,7 @@ public class Greeter
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException("Name cannot be null or whitespace", nameof(name));
+            throw new ArgumentException(@"Name cannot be null or whitespace", nameof(name));
         }
 
         return $"Hello, {name}";

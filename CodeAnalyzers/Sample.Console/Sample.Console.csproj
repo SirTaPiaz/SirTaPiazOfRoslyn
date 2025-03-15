@@ -9,6 +9,11 @@
         <InvariantGlobalization>true</InvariantGlobalization>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <NoWarn>SHG001</NoWarn>
+        <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Sample.Fx\Sample.Fx.csproj"/>

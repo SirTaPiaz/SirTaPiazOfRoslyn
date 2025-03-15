@@ -1,4 +1,8 @@
-﻿string input;
+﻿using System.Diagnostics.CodeAnalysis;
+
+[assembly: SuppressMessage("Usage", "SHG001", Justification = "Not applicable")]
+
+string input;
 
 do
 {
