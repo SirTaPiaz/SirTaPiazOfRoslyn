@@ -5,6 +5,3 @@ English Content:
 
 https://www.youtube.com/playlist?list=PLJrOHj5Nun9P8maAMOQXK6UcW9_S_KTZh
 
-Persian Content:
-
-https://www.youtube.com/playlist?list=PLJrOHj5Nun9Osc8M735H78eVc5dqiAIYX
