@@ -1,5 +1,7 @@
-# SeasonOne_Roslyn
-This repository contains all the source codes for the season one - Roslyn - of the Sir Ta Piaz channel!
+# Roslyn Inside Out
+
+This repository contains all the source codes for the season one - Roslyn -
+of [Shahab The Guy channel](https://www.youtube.com/@shahab-the-guy)!
 
 English Content:
 
