@@ -68,5 +68,11 @@ namespace Sample.Analyzers {
                 return ResourceManager.GetString("SHG001Title", resourceCulture);
             }
         }
+        
+        internal static string SP8509SuppressorJustification {
+            get {
+                return ResourceManager.GetString("SP8509SuppressorJustification", resourceCulture);
+            }
+        }
     }
 }

@@ -39,4 +39,7 @@
         <value>No Throw Exception</value>
         <comment>The title of the diagnostic.</comment>
     </data>
+    <data name="SP8509SuppressorJustification" xml:space="preserve">
+        <value>Just because it makes more sense to me {0}</value>
+    </data>
 </root>
