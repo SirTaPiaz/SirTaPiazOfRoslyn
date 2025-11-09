@@ -19,38 +19,67 @@ public class SwitchExpressionAnalyzer : DiagnosticSuppressor
             Resources.ResourceManager,
             typeof(Resources));
 
-    private readonly SuppressionDescriptor _rule = new (SuppressorId, DiagnosticId, Justification);
-    
+    private readonly SuppressionDescriptor _rule = new(SuppressorId, DiagnosticId, Justification);
+
     public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions => [_rule];
 
     public override void ReportSuppressions(SuppressionAnalysisContext context)
     {
-        var reportedDiagnostic = context.ReportedDiagnostics.First(x => x.Id == DiagnosticId);
+        context.CancellationToken.ThrowIfCancellationRequested();
+
+        var reportedDiagnostics = context.ReportedDiagnostics;
+        foreach (var reportedDiagnostic in reportedDiagnostics)
+        {
+            if (CanSkipReportedDiagnostic(context, reportedDiagnostic)) 
+                continue;
+
+            SuppressReportedDiagnostic(context, reportedDiagnostic);
+        }
+    }
+
+    private void SuppressReportedDiagnostic(SuppressionAnalysisContext context, Diagnostic reportedDiagnostic)
+    {
+        var suppression = Suppression.Create(_rule, reportedDiagnostic);
+        context.ReportSuppression(suppression);
+    }
+
+    private static bool CanSkipReportedDiagnostic(SuppressionAnalysisContext context, Diagnostic reportedDiagnostic)
+    {
         var syntaxTree = reportedDiagnostic.Location.SourceTree;
         if (syntaxTree is null)
-            return;
+            return true;
 
         var semanticModel = context.GetSemanticModel(syntaxTree);
 
         var root = syntaxTree.GetRoot();
 
-        if (root.FindNode(reportedDiagnostic.Location.SourceSpan) is not SwitchExpressionSyntax switchExpressionNode)
-            return;
+        if (root.FindNode(reportedDiagnostic.Location.SourceSpan) is not SwitchExpressionSyntax
+            switchExpressionNode)
+            return true;
 
         var switchExpressionArms = switchExpressionNode.Arms;
         if (switchExpressionArms.Count == 0)
-            return;
+            return true;
 
         if (root.FindNode(switchExpressionNode.GoverningExpression.Span) is not IdentifierNameSyntax identifier)
-            return;
-
-        context.CancellationToken.ThrowIfCancellationRequested();
+            return true;
 
         if (semanticModel.GetSymbolInfo(identifier).Symbol is not IParameterSymbol identifierSemanticModel)
-            return;
+            return true;
 
         if (identifierSemanticModel.Type is { IsAbstract: false })
-            return;
+            return true;
+
+        if (ValidateSwitchExpressionsArms(context, identifierSemanticModel, switchExpressionArms, semanticModel))
+            return true;
+        return false;
+    }
+
+    private static bool ValidateSwitchExpressionsArms(SuppressionAnalysisContext context,
+        IParameterSymbol identifierSemanticModel, SeparatedSyntaxList<SwitchExpressionArmSyntax> switchExpressionArms,
+        SemanticModel semanticModel)
+    {
+        context.CancellationToken.ThrowIfCancellationRequested();
 
         var derivedTypes = context.Compilation.SyntaxTrees
             .SelectMany(tree =>
@@ -58,6 +87,11 @@ public class SwitchExpressionAnalyzer : DiagnosticSuppressor
                 var records = tree.GetRoot()
                         .DescendantNodes()
                         .OfType<RecordDeclarationSyntax>()
+                        .Where(syntax => syntax.BaseList is not null && syntax.BaseList.Types.Count == 1
+                                                                     && syntax.BaseList.Types.First().Type
+                                                                         .ToFullString()
+                                                                         .Contains(identifierSemanticModel.Type.Name)
+                        )
                         .ToImmutableArray()
                     ;
 
@@ -67,21 +101,15 @@ public class SwitchExpressionAnalyzer : DiagnosticSuppressor
                 var model = context.GetSemanticModel(tree);
                 return records.Select(record => model.GetDeclaredSymbol(record));
             })
-            .Where(type => type?.BaseType != null)
             .Where(type => type!.BaseType!.Equals(identifierSemanticModel.Type, SymbolEqualityComparer.Default))
             .OrderBy(type => type!.Name)
-            .ToList();
+            .ToImmutableArray();
 
         var handledTypes = switchExpressionArms
             .Select(arm => semanticModel.GetTypeInfo(arm.Pattern).ConvertedType)
-            .Where(type => type is not null)
             .OrderBy(type => type!.Name)
-            .ToList();
+            .ToImmutableArray();
 
-        if (!derivedTypes.SequenceEqual(handledTypes, SymbolEqualityComparer.Default))
-            return;
-        
-        var suppression = Suppression.Create(_rule, reportedDiagnostic);
-        context.ReportSuppression(suppression);
+        return !derivedTypes.SequenceEqual(handledTypes, SymbolEqualityComparer.Default);
     }
 }
