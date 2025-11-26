@@ -21,7 +21,7 @@ public class SwitchExpressionAnalyzer : DiagnosticSuppressor
 
     private readonly SuppressionDescriptor _rule = new(SuppressorId, DiagnosticId, Justification);
 
-    public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions => [_rule];
+    public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions => ImmutableArray.Create(_rule);
 
     public override void ReportSuppressions(SuppressionAnalysisContext context)
     {

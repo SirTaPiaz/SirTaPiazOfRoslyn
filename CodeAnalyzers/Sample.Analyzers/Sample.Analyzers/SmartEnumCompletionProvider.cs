@@ -17,7 +17,7 @@ public class SmartEnumCompletionProvider : CompletionProvider
     public override Task ProvideCompletionsAsync(CompletionContext context)
     {
         ImmutableDictionary<string, string> properties = ImmutableDictionary.Create<string, string>();
-        ImmutableArray<string> tags = [WellKnownTags.Module, WellKnownTags.Class, WellKnownTags.EnumMember];
+        ImmutableArray<string> tags = ImmutableArray.Create<string>(WellKnownTags.Module, WellKnownTags.Class, WellKnownTags.EnumMember);
 
         ImmutableArray<CharacterSetModificationRule> filterCharacterRules = default;
         ImmutableArray<CharacterSetModificationRule> commitCharacterRules = default;
@@ -30,28 +30,31 @@ public class SmartEnumCompletionProvider : CompletionProvider
             CompletionItemSelectionBehavior.HardSelection);
 
         var completionItem = CompletionItem.Create(
-            "Aaa", "Aaa", "Aaa", properties, tags, rules);
+            "Shahab", "Stefan", "Aaa", properties, tags, rules);
         context.AddItem(completionItem);
 
         context.SuggestionModeItem = completionItem;
+        context.IsExclusive = true;
 
         return Task.CompletedTask;
     }
 
-    public override bool ShouldTriggerCompletion(SourceText text, int caretPosition, CompletionTrigger trigger,
-        OptionSet options)
+    public override bool ShouldTriggerCompletion(
+        SourceText text, int caretPosition,
+        CompletionTrigger trigger, OptionSet options)
     {
-        return false;
+        return true;
     }
 
-    public override Task<CompletionDescription?> GetDescriptionAsync(Document document, CompletionItem item, CancellationToken cancellationToken)
+    public override Task<CompletionDescription?> GetDescriptionAsync(
+        Document document, CompletionItem item,
+        CancellationToken cancellationToken)
     {
-        var description = CompletionDescription.FromText("This is our beautiful description.");
-
-        return Task.FromResult(description);
+        return base.GetDescriptionAsync(document, item, cancellationToken);
     }
 
-    public override Task<CompletionChange> GetChangeAsync(Document document, CompletionItem item, char? commitKey, CancellationToken cancellationToken)
+    public override Task<CompletionChange> GetChangeAsync(Document document, CompletionItem item, char? commitKey,
+        CancellationToken cancellationToken)
     {
         return base.GetChangeAsync(document, item, commitKey, cancellationToken);
     }

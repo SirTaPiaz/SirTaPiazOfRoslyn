@@ -38,7 +38,8 @@ public class MaybeSemanticAnalyzer : DiagnosticAnalyzer
     );
 
     // Keep in mind: you have to list your rules here.
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = 
+        ImmutableArray.Create(Rule);
 
     public override void Initialize(AnalysisContext context)
     {

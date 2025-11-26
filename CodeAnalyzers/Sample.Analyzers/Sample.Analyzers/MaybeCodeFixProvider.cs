@@ -22,7 +22,7 @@ public class MaybeCodeFixProvider : CodeFixProvider
 {
     // Specify the diagnostic IDs of analyzers that are expected to be linked.
     public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        [MaybeSemanticAnalyzer.DiagnosticId];
+        ImmutableArray.Create(MaybeSemanticAnalyzer.DiagnosticId);
 
     // If you don't need the 'fix all' behaviour, return null.
     public override FixAllProvider? GetFixAllProvider() => null;
